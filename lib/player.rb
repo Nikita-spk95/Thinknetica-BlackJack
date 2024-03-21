@@ -2,8 +2,10 @@ class Player
   attr_reader :cards
   attr_accessor :bank
 
+  INITIAL_BANK = 100
+
   def initialize
-    @bank = 100
+    @bank = INITIAL_BANK
     @cards = []
   end
 
@@ -11,30 +13,42 @@ class Player
     @cards << card if cards.size <= 2
   end
 
-  def show_cards
-    cards
-  end
+  # def show_cards
+  #   cards
+  # end
 
   def delete_cards
     @cards = []
   end
 
-  def move; end
+  def move
+    raise NotImplementedError, 'Метод move должен быть переопределен в подклассе'
+  end
 
-  def points # make refactoring
+  def points
     points = 0
-    cards.each do |e|
-      if e.include?("K") || e.include?("Q") || e.include?("J") || e.include?("T")
-        points += 10
-      else
-        points += e.chr.to_i
-      end
+    ace_count = 0
+    special_values = %w[K Q J T]
+
+    cards.each do |card|
+      value = card[0]
+      card_value = if special_values.include?(value)
+                     10
+                   elsif value == 'A'
+                     ace_count += 1
+                     11
+                   else
+                     value.to_i
+                   end
+
+      points += card_value
     end
-    cards.each do |e|
-      if e.include?("A")
-        points + 11 > 21 ? points += 1 : points += 11
-      end
+
+    while points > 21 && ace_count.positive?
+      points -= 10
+      ace_count -= 1
     end
+
     points
   end
 end

@@ -1,4 +1,6 @@
 class Game
+  DEFAULT_BET = 10
+
   def initialize
     @rounds = 0
   end
@@ -7,15 +9,15 @@ class Game
     system 'clear' or system 'cls'
   end
 
-  def make_bet(user, dealer, bet)
+  def make_bet(user, dealer, bet: DEFAULT_BET)
     @money_in_game = bet * 2
-    user.bank -= bet 
+    user.bank -= bet
     dealer.bank -= bet
   end
 
   def game_message(user, dealer, flag)
     puts "Деньги игрока: #{user.bank} ||| Деньги дилера: #{dealer.bank}"
-    puts "Карты игрока: #{user.show_cards}"
+    puts "Карты игрока: #{user.cards}"
     puts "Очки игрока: #{user.points}"
     puts "Карты дилера: #{dealer.show_cards(flag)}"
   end
@@ -49,6 +51,13 @@ class Game
     end
   end
 
+  def user_move
+    puts '1. Добавить карту'
+    puts '2. Открыть карты'
+    puts '3. Пас'
+    gets.chomp.to_i
+  end
+
   def play_round(user, dealer)
     cls
     user.delete_cards
@@ -57,12 +66,12 @@ class Game
     deck = Deck.new
     deck.cards_shuffle
 
-    2.times do 
+    2.times do
       user.add_card(deck.take_card)
       dealer.add_card(deck.take_card)
     end
 
-    make_bet(user, dealer, 10)
+    make_bet(user, dealer)
 
     puts "Игра №#{@rounds += 1}"
     puts "Деньги в игре: #{@money_in_game}"
@@ -70,7 +79,7 @@ class Game
     game_message(user, dealer, true)
     puts
 
-    case user.move
+    case user_move
     when 1
       user.add_card(deck.take_card)
       dealer.move(deck.take_card)

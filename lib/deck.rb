@@ -6,11 +6,11 @@ class Deck
   end
 
   def cards_shuffle
-    @deck.shuffle!
+    deck.shuffle!
   end
 
   def take_card
-    @deck.pop
+    deck.pop
   end
 
   private
@@ -18,7 +18,7 @@ class Deck
   def generate_deck
     deck = [], suits = [], ranks = []
     card = Card.new
-    ["\u2660","\u2665","\u2666","\u2663"].each do |element|
+    ["\u2660", "\u2665", "\u2666", "\u2663"].each do |element|
       suits << card.suit = element
     end
 
@@ -26,6 +26,6 @@ class Deck
       ranks << card.rank = element
     end
 
-    deck = ranks.product(suits).map(&:join)
+    ranks.product(suits).map(&:join)
   end
 end
